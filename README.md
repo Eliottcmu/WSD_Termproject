@@ -4,7 +4,7 @@
 
 ### Problem Definition
 
-The Bookstore API provides a backend service for managing an online bookstore ecosystem. It centralizes authentication, user management, catalog management (books, sellers), transactional workflows (orders and order items), and community interactions (reviews and comments), while enforcing role-based access control and JWT-based security.
+The Bookstore API provides a backend service for managing an online bookstore ecosystem. It centralizes authentication, user management, catalog management (books, sellers), transactional workflows (orders and order items), and community interactions (reviews and comments), while enforcing role-based access control and JWT-based security. It is 
 
 ### Key Features
 
@@ -39,12 +39,22 @@ The Bookstore API provides a backend service for managing an online bookstore ec
 | `Jwt__RefreshTokenExpirationDays`   | Refresh token lifetime                             |
 | `MongoDbSettings__ConnectionString` | MongoDB connection string                          |
 | `MongoDbSettings__DatabaseName`     | MongoDB database name                              |
+| `GOOGLE_CLIENT_ID`     | Google client ID for OAuth authentication         |
+| `FIREBASE_PROJECT_ID`  | Firebase project ID for Firebase authentication    |
+| `FIREBASE_CLIENT_ID`  | Firebase client ID for Firebase authentication    |
+| `FIREBASE_PRIVATE_KEY`  | Firebase private key for Firebase authentication    |
+
+
 
 ---
 
 ## Authentication Flow
 
-1. User submits credentials via `POST /api/auth/login`
+1. User submits credentials via `POST /api/auth/login` or connects via Firebase/Google:
+
+   * Email & Password
+   * Firebase token
+   * Google OAuth token 
 2. API validates credentials and returns:
 
    * Access token (JWT)
@@ -63,7 +73,7 @@ The Bookstore API provides a backend service for managing an online bookstore ec
 
 | Endpoint Category               | ROLE_USER     | ROLE_ADMIN |
 | ------------------------------- | ------------- | ---------- |
-| Auth (login, refresh, logout)   | ✓             | ✓          |
+| Auth (login, refresh, logout, firebase and google)   | ✓             | ✓          |
 | Books (GET)                     | ✓             | ✓          |
 | Books (POST, PUT, DELETE)       | ✗             | ✓          |
 | Reviews & Comments (CRUD, like) | ✓             | ✓          |
@@ -80,6 +90,8 @@ The Bookstore API provides a backend service for managing an online bookstore ec
 | ----- | --------------------------------------------- | --------- | -------------------------- |
 | User  | [user1@example.com](mailto:user1@example.com) | P@ssw0rd! | Standard user permissions  |
 | Admin | [admin@example.com](mailto:admin@example.com) | P@ssw0rd! | Full administrative access |
+
+(real credentials are in the credential.txt file)
 
 ---
 
@@ -105,6 +117,8 @@ The Bookstore API provides a backend service for managing an online bookstore ec
 | POST   | /api/auth/login   | User login        |
 | POST   | /api/auth/logout  | Logout user       |
 | POST   | /api/auth/refresh | Refresh JWT token |
+| POST   | /api/auth/firebase | Connect via Firebase |
+| POST   | /api/auth/google | Connect via Google |
 
 ### Books
 
