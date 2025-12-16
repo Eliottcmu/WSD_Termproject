@@ -22,9 +22,9 @@ The Bookstore API provides a backend service for managing an online bookstore ec
 
 ## Deployment Address (JCloud)
 
-* **Base URL**: `http://113.198.66.75:18164`
-* **Swagger UI**: `http://113.198.66.75:18164/swagger`
-* **Health Check**: `http://113.198.66.75:18164/health` 
+* **Base URL**: `http://113.198.66.75:10059`
+* **Swagger UI**: `http://113.198.66.75:10059/swagger/index.html`
+* **Health Check**: `http://113.198.66.75:10059/health` 
 ---
 
 ## Environment Variable Descriptions (matching `.env.example`)
@@ -183,21 +183,44 @@ The Bookstore API provides a backend service for managing an online bookstore ec
 
 ## Execution Methods
 
-### Local Execution
+## Prerequisites
 
-1. **Install Dependencies**
+### For Local Development
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [MongoDB](https://www.mongodb.com/try/download/community) (or MongoDB Atlas account)
+- Git
 
-   ```bash
-   dotnet restore
-   ```
+### For Docker
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
-2. **Environment Setup**
+### For VM Deployment
+- SSH client (XShell, PuTTY, or terminal)
+- Access to JCloud VM instance
+- Public IP and port forwarding configured
+---
 
-   ```bash
-   cp .env.example .env
-   ```
+## Local Execution
 
-   Update JWT and MongoDB values.
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Eliottcmu/WSD_Termproject.git
+cd WSD_Termproject/Bookstore.Api/BookstoreApi
+```
+
+### 2. Install Dependencies
+```bash
+dotnet restore
+```
+
+### 3. Environment Setup
+create a `.env` file in the project root:
+```bash 
+cp .env
+```
+Update the `.env` file with the configuration 
+
+Update JWT and MongoDB values.
 
 3. **Run Application**
 
@@ -210,6 +233,58 @@ The Bookstore API provides a backend service for managing an online bookstore ec
    * `http://localhost:<port>/swagger`
 
 ---
+## Docker Execution
+
+### 1. Prerequisites
+Ensure Docker and Docker Compose are installed and running.
+
+### 2. Build and Run with Docker Compose
+
+#### Development Environment
+```bash
+cd WSD_Termproject/Bookstore.Api/BookstoreApi
+
+# Build and start containers
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f bookstore-api
+
+# Stop containers
+docker-compose down
+```
+
+#### Production Environment
+```bash
+# Build with production settings
+docker-compose -f docker-compose.prod.yml up -d --build
+```
+
+### 3. Docker Commands Reference
+
+```bash
+# View running containers
+docker ps
+
+# View all containers (including stopped)
+docker ps -a
+
+# Stop containers
+docker-compose down
+
+# Remove containers and volumes
+docker-compose down -v
+
+# Rebuild containers
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f
+
+# Execute commands in container
+docker-compose exec bookstore-api bash
+```
+
 
 ## Performance and Security Considerations
 
