@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Bookstore.Api.Exceptions;
 using Bookstore.Api.Middleware;
@@ -8,6 +9,7 @@ using FirebaseAdmin.Auth;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookstore.Api.Controllers
 {
@@ -121,6 +123,7 @@ namespace Bookstore.Api.Controllers
         // Firebase Authentication
         //==================================================================
         [HttpPost("firebase")]
+        [AllowAnonymous]
         [SwaggerOperation(
             Summary = "Firebase login",
             Description = "Authenticates a user using a Firebase ID token and returns a signed JWT."
@@ -189,6 +192,7 @@ namespace Bookstore.Api.Controllers
         // GOogle Authentication
         //==================================================================
         [HttpPost("google")]
+        [AllowAnonymous]
         [SwaggerOperation(
             Summary = "Google login",
             Description = "Authenticates a user using a Google ID token and returns a JWT."
@@ -260,6 +264,60 @@ namespace Bookstore.Api.Controllers
                     },
                 }
             );
+        }
+
+        [HttpGet("test/login-url")]
+        [AllowAnonymous]
+        public IActionResult GetGoogleAuthUrl()
+        {
+            var clientId = _configuration["GOOGLE_CLIENT_ID"];
+            var redirectUri = "http://localhost:5149/api/auth/test/callback";
+
+            if (string.IsNullOrEmpty(clientId))
+            {
+                return BadRequest("GOOGLE_CLIENT_ID est introuvable dans la configuration.");
+            }
+            var url =
+                $"https://accounts.google.com/o/oauth2/v2/auth?"
+                + $"client_id={clientId}&"
+                + $"response_type=code&"
+                + $"scope=openid%20email%20profile&"
+                + $"redirect_uri={redirectUri}";
+
+            return Redirect(url);
+        }
+
+        [HttpGet("test/callback")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GoogleCallback([FromQuery] string code)
+        {
+            var clientId = _configuration["GOOGLE_CLIENT_ID"];
+            var clientSecret = _configuration["GOOGLE_CLIENT_ID_SECRET"];
+            var redirectUri = "http://localhost:5149/api/auth/test/callback";
+
+            if (string.IsNullOrEmpty(code))
+                return BadRequest("Code manquant.");
+            using var httpClient = new HttpClient();
+
+            var tokenRequest = new HttpRequestMessage(
+                HttpMethod.Post,
+                "https://oauth2.googleapis.com/token"
+            );
+
+            var paramsDict = new Dictionary<string, string>
+            {
+                { "code", code },
+                { "client_id", clientId! },
+                { "client_secret", clientSecret! },
+                { "redirect_uri", redirectUri },
+                { "grant_type", "authorization_code" },
+            };
+
+            tokenRequest.Content = new FormUrlEncodedContent(paramsDict);
+
+            var response = await httpClient.SendAsync(tokenRequest);
+            var responseString = await response.Content.ReadAsStringAsync();
+            return Content(responseString, "application/json");
         }
     }
 
