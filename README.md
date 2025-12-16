@@ -40,6 +40,7 @@ The Bookstore API provides a backend service for managing an online bookstore ec
 | `MongoDbSettings__ConnectionString` | MongoDB connection string                          |
 | `MongoDbSettings__DatabaseName`     | MongoDB database name                              |
 | `GOOGLE_CLIENT_ID`     | Google client ID for OAuth authentication         |
+| `GOOGLE_CLIENT_ID_SECRET`     | Google client secret for OAuth authentication         |
 | `FIREBASE_PROJECT_ID`  | Firebase project ID for Firebase authentication    |
 | `FIREBASE_CLIENT_ID`  | Firebase client ID for Firebase authentication    |
 | `FIREBASE_PRIVATE_KEY`  | Firebase private key for Firebase authentication    |
@@ -119,6 +120,8 @@ The Bookstore API provides a backend service for managing an online bookstore ec
 | POST   | /api/auth/refresh | Refresh JWT token |
 | POST   | /api/auth/firebase | Connect via Firebase |
 | POST   | /api/auth/google | Connect via Google |
+|GET    | /api/auth/test/login-url | Get Google OAuth login URL |
+|GET    | /api/auth/test/callback    | Google OAuth callback |
 
 ### Books
 
