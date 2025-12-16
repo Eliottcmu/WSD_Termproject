@@ -230,7 +230,7 @@ Update JWT and MongoDB values.
 
 4. **Access Swagger**
 
-   * `http://localhost:<port>/swagger`
+   * `http://localhost:<port>/swagger/index.html`
 
 ---
 ## Docker Execution
